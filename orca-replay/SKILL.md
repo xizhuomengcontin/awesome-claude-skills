@@ -35,8 +35,10 @@ least one recording under `.orca/runs`.
    instead of flattening both into one confident sentence.
 3. **Confirms determinism before explaining**: replay is offline and free, so there is no excuse for
    committing to an explanation of a failure nobody has reproduced.
-4. **Puts a cost gate on model comparison**: `orca_compare` calls every model named and spends real
-   tokens, so this skill requires asking first.
+4. **Puts a disclosure gate on model comparison**: `orca_compare` sends the recording's files and
+   conversation prefix to every provider behind the model ids it is given, and spends real tokens
+   doing it. This skill requires saying what is sent and to whom before asking, because approving a
+   bill is not approving a disclosure.
 
 ## How to Use
 
@@ -78,7 +80,9 @@ so treat that last one as a reading rather than a fact.
 
 I replayed it offline: same exit code, no divergence. It is deterministic.
 
-Comparing models on this would call each one for real and cost tokens. Want me to?
+Comparing models would send this run's files and conversation prefix to each
+provider you name, and cost tokens. Say which models and I'll tell you what
+goes with them.
 ```
 
 ## Tips
@@ -95,6 +99,20 @@ Comparing models on this would call each one for real and cost tokens. Want me t
 - No recording yet? Say so rather than guessing, and offer `orca record claude`. If `orca` itself is
   missing, ask before installing and pin the version (`npm i -g orcareplay@0.1.2`) rather than
   taking whatever `latest` resolves to.
+
+## Limitations
+
+- Only sees runs that were recorded. An unrecorded session has no trace, and the honest answer is
+  "there is no recording", not a reconstruction.
+- A session typed at a terminal replays approximately. Those prompts were never on the wire, so
+  only a run started with the prompt in argv replays byte-for-byte.
+- A replay does not repeat the calls a harness makes for itself, and tools that need a person are
+  absent when the same agent runs without one.
+- `inferred` graph edges are derived at query time, not witnessed. They are a reading, not evidence.
+- Not every harness can be captured; a recording that came back empty means capture failed, not
+  that nothing happened.
+- Replay reproduces the agent's side only. Databases, remote branches and the clock are whatever
+  they are now.
 
 ## Common Use Cases
 
