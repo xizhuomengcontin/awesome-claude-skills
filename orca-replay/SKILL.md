@@ -83,16 +83,18 @@ Comparing models on this would call each one for real and cost tokens. Want me t
 
 ## Tips
 
-- Pass `worktree: true` to `orca_replay` when the user is actively editing. Without it the replay
-  restores the recorded filesystem over the working tree and puts it back, which is fine unattended
-  and alarming to watch.
+- Always pass `worktree: true` to `orca_replay`. It uses a scratch copy. Without it the replay
+  restores the recorded filesystem over the working tree for the duration and puts it back at the
+  end, so uncommitted work is absent while it runs and stays absent if the replay is interrupted.
+  Run in place only after the user has been told that and agreed.
 - `reused=3/5` on an interactive recording is not a partial replay. Harnesses make calls for
   themselves — a quota probe, a session-naming request — and a replay does not repeat them.
 - A run recorded with the prompt in argv replays exactly. A session someone typed into replays
   approximately, because those prompts were never on the wire.
 - Run `orca scrub` before sharing a trace. Recordings hold whatever the run held.
-- No recording yet? Say so rather than guessing, and offer `orca record claude`. Recording now is
-  what makes the next "why did it do that" answerable.
+- No recording yet? Say so rather than guessing, and offer `orca record claude`. If `orca` itself is
+  missing, ask before installing and pin the version (`npm i -g orcareplay@0.1.2`) rather than
+  taking whatever `latest` resolves to.
 
 ## Common Use Cases
 
